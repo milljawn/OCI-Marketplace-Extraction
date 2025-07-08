@@ -1,0 +1,382 @@
+# Oracle Partner Network to Cloud Marketplace: Implementation Checklist
+
+## Pre-Qualification Requirements
+
+### Company Eligibility
+- [ ] 1. Company has been in business for minimum 6 months
+- [ ] 2. Company has minimum 5 employees (no sole proprietorships)
+- [ ] 3. Company is legally registered with proper documentation
+- [ ] 4. Company demonstrates financial stability
+- [ ] 5. Company has experience in IT solutions, software development, or related fields
+- [ ] 6. Business email domain available for Oracle Account creation
+
+### Personnel Designation
+- [ ] 7. Identify and designate Partner Administrator (primary contact for OPN matters)
+- [ ] 8. Designate up to 5 alternate Partner Administrators
+- [ ] 9. Identify two key company leaders (CEO, CTO, President, or C-suite executives)
+- [ ] 10. Designate Technical Readiness Contact for technology decisions
+
+## Oracle Partner Network Enrollment
+
+### Initial Setup
+- [ ] 11. Create Oracle Account using business email address
+- [ ] 12. Complete Oracle Partner Journey Builder (10-minute assessment)
+- [ ] 13. Review personalized recommendations from Journey Builder
+- [ ] 14. Gather required business documentation (legal entity papers, financial statements)
+
+### OPN Application Process
+- [ ] 15. Complete OPN enrollment application online
+- [ ] 16. Select appropriate OPN track(s):
+  - [ ] Build Track (for ISVs creating Oracle Cloud solutions)
+  - [ ] Sell Track (for Oracle Cloud resellers)
+  - [ ] Service Track (for implementation and managed services)
+  - [ ] License and Hardware Track (for on-premises solutions)
+  - [ ] Industry Healthcare Track (for healthcare solutions)
+- [ ] 17. Review and accept OPN membership terms
+- [ ] 18. Accept Partner Code of Ethics and Business Conduct
+- [ ] 19. Pay OPN membership fee ($500 USD annually)
+- [ ] 20. Pay additional track subscription fees if applicable
+- [ ] 21. Submit application for Oracle review
+- [ ] 22. Await approval notification from Oracle
+
+### Post-Enrollment Setup
+- [ ] 23. Access OPN portal and familiarize with available resources
+- [ ] 24. Download and review relevant technical documentation
+- [ ] 25. Identify certification and training requirements for your track
+
+## Expertise Development
+
+### Certification Requirements
+- [ ] 26. Enroll team members in required Oracle University courses
+- [ ] 27. Complete Oracle Cloud Infrastructure certifications relevant to your solution
+- [ ] 28. Obtain product-specific certifications based on solution focus
+- [ ] 29. Schedule and pass required technical assessments
+
+### Business Development
+- [ ] 30. Develop customer success stories and case studies
+- [ ] 31. Gather customer references and testimonials
+- [ ] 32. Document proven implementation successes
+- [ ] 33. Demonstrate external commitment to Oracle through:
+  - [ ] Speaking at Oracle events
+  - [ ] Publishing Oracle-related content
+  - [ ] Participating in Oracle marketing activities
+  - [ ] Joint go-to-market activities
+
+### Expertise Validation
+- [ ] 34. Submit expertise application with required qualifiers
+- [ ] 35. Complete expertise assessment process
+- [ ] 36. Maintain current certifications and training
+
+## Cloud Marketplace Publisher Registration
+
+### Publisher Account Setup
+- [ ] 37. Access Oracle Cloud Marketplace Partner Portal
+- [ ] 38. Complete publisher registration form
+- [ ] 39. Provide detailed contact information
+- [ ] 40. Enter OPN membership number
+- [ ] 41. Submit company information and business details
+
+### Supplier Registration (Required for Paid Listings)
+- [ ] 42. Provide complete company details including:
+  - [ ] Legal company name and address
+  - [ ] Tax identification number
+  - [ ] Required tax forms (W-9, etc.)
+  - [ ] Banking information for payment processing
+- [ ] 43. Assign two authorized points of contact from company
+- [ ] 44. Submit supplier registration for verification
+- [ ] 45. Respond to Supplier Data Management (SDM) team requests
+- [ ] 46. Complete Independent Validation Team (IVT) verification process
+- [ ] 47. Receive supplier setup confirmation email
+
+## Technical Infrastructure Setup
+
+### Oracle Cloud Infrastructure Configuration
+- [ ] 48. Create Oracle Cloud Infrastructure tenancy
+- [ ] 49. Configure required IAM policies for marketplace access
+- [ ] 50. Set up compartments for marketplace resources
+- [ ] 51. Configure network security groups and rules
+- [ ] 52. Establish connectivity between development and OCI environments
+
+### Security and Compliance Setup
+- [ ] 53. Execute Oracle Confidentiality Agreement (CDA) if required
+- [ ] 54. Establish vulnerability monitoring and notification processes
+- [ ] 55. Implement security update management procedures
+- [ ] 56. Configure logging and monitoring for compliance
+
+## Product Development and Technical Compliance
+
+### Linux Image Development (if applicable)
+- [ ] 57. Install and configure base operating system
+- [ ] 58. Install application software and dependencies
+- [ ] 59. Remove all existing SSH host keys using `oci-image-cleanup` utility
+- [ ] 60. Configure cloud-init service:
+  - [ ] Install cloud-init package
+  - [ ] Enable cloud-init service for automatic startup
+  - [ ] Configure cloud-init to process OCI metadata
+  - [ ] Test cloud-init functionality with sample user data
+- [ ] 61. Secure root user account:
+  - [ ] Set root login shell to `/sbin/nologin`
+  - [ ] Edit `/etc/ssh/sshd_config` and set `PermitRootLogin no`
+  - [ ] Remove all entries from `/root/.ssh/authorized_keys`
+- [ ] 62. Configure SSH authorized keys handling:
+  - [ ] Ensure all authorized_keys entries include: `no-port-forwarding, no-agent-forwarding, no-X11-forwarding`
+  - [ ] Verify root user has no usable SSH key entries
+  - [ ] Configure system to only accept user-provided keys via cloud-init
+  - [ ] Run `oci-image-cleanup` utility to properly clean keys
+- [ ] 63. Clean network configuration:
+  - [ ] Remove `/etc/udev/rules.d/70-persistent-net.rules` if present
+  - [ ] Configure network interfaces for DHCP
+  - [ ] Remove hardware-specific MAC address configurations
+- [ ] 64. Upgrade to Instance Metadata Service v2:
+  - [ ] Update applications to use IMDSv2 endpoints
+  - [ ] Remove hardcoded metadata v1 references
+  - [ ] Test metadata access functionality
+- [ ] 65. Security hardening:
+  - [ ] Enable Mandatory Access Control (MAC) if applicable
+  - [ ] Configure firewall rules and disable unnecessary services
+  - [ ] Set appropriate file permissions and ownership
+  - [ ] Remove default passwords and test accounts
+- [ ] 66. Install and configure monitoring agents if required
+- [ ] 67. Document all network ports opened by default
+- [ ] 68. Create comprehensive startup and configuration scripts
+
+### Windows Image Development (if applicable)
+- [ ] 69. Install and configure base Windows operating system
+- [ ] 70. Install application software and dependencies
+- [ ] 71. Run Windows Sysprep with generalization:
+  - [ ] Execute `sysprep /generalize /oobe /shutdown`
+  - [ ] Remove user-specific configurations
+  - [ ] Clear Windows activation status
+  - [ ] Remove hardware-specific drivers
+- [ ] 72. Configure Instance Metadata Service v2 compatibility
+- [ ] 73. Clean user account configurations:
+  - [ ] Remove or disable pre-configured user accounts
+  - [ ] Ensure only built-in Administrator account remains
+  - [ ] Configure Windows for cloud-init user creation
+- [ ] 74. Test image deployment and functionality
+
+### Stack Development (if applicable)
+- [ ] 75. Create Terraform configuration files (.tf)
+- [ ] 76. Create Schema file (.yaml) for variable definitions
+- [ ] 77. Ensure Terraform configuration uses only approved Marketplace images
+- [ ] 78. Implement instance principal authentication
+- [ ] 79. Remove external binary downloads from configuration
+- [ ] 80. Configure cloud-init templates for customer customization only
+- [ ] 81. Test stack deployment in multiple scenarios
+- [ ] 82. Validate Terraform version compatibility (specify min/max versions)
+- [ ] 83. Package stack as zip file with proper structure
+
+### Application Development (if applicable)
+- [ ] 84. Create installation package with all necessary components
+- [ ] 85. Develop automated deployment scripts
+- [ ] 86. Create configuration templates
+- [ ] 87. Implement proper error handling and logging
+- [ ] 88. Test installation process across different OCI shapes
+
+## Documentation and Content Creation
+
+### Technical Documentation
+- [ ] 89. Create comprehensive Getting Started guide including:
+  - [ ] Step-by-step installation instructions
+  - [ ] Initial configuration requirements
+  - [ ] Network and security configuration
+  - [ ] Troubleshooting common issues
+- [ ] 90. Develop detailed user manual or link to existing documentation
+- [ ] 91. Create system requirements specification including:
+  - [ ] Compatible OCI compute shapes
+  - [ ] Required security rules and IAM policies
+  - [ ] Block volume requirements
+  - [ ] Network configuration needs
+- [ ] 92. Document all network ports that must be opened
+- [ ] 93. Create support documentation with accurate contact information
+- [ ] 94. Prepare Terms of Use document:
+  - [ ] Use proper title case formatting
+  - [ ] Ensure grammatical accuracy
+  - [ ] Include all necessary legal terms
+  - [ ] Verify all links open in new tabs/windows
+
+### Marketing Materials
+- [ ] 95. Create application banner (1160x200 pixels, max 10MB, BMP/GIF/JPEG/PNG)
+- [ ] 96. Design company logo (115x115 pixels, max 5MB, BMP/GIF/JPEG/PNG)
+- [ ] 97. Create application icon (130x130 pixels, max 5MB, BMP/GIF/JPEG/PNG)
+- [ ] 98. Develop distinctive icon design (no Oracle logos/trademarks)
+- [ ] 99. Take application screenshots:
+  - [ ] Minimum 2 screenshots required
+  - [ ] Recommended dimensions: 640x480 pixels
+  - [ ] Hide browser toolbars and menus
+  - [ ] Use 4:3 aspect ratio or pad images appropriately
+  - [ ] Maximum 5MB per screenshot
+- [ ] 100. Create demonstration video:
+  - [ ] Host on YouTube or Vimeo
+  - [ ] Focus on main features and Oracle Cloud value
+  - [ ] Keep concise and professional
+  - [ ] Ensure URL starts with http:// or https://
+
+## Marketplace Listing Creation
+
+### Listing Development
+- [ ] 101. Access Oracle Cloud Marketplace Partner Portal
+- [ ] 102. Create new application, image, or stack listing
+- [ ] 103. Enter application name (maximum 80 characters, optimal 36)
+- [ ] 104. Write clear, compelling headline stating application purpose
+- [ ] 105. Develop comprehensive description including:
+  - [ ] Target audience identification
+  - [ ] Value proposition for Oracle Cloud
+  - [ ] Key features and benefits
+  - [ ] Integration capabilities
+- [ ] 106. Upload marketing assets (banner, logo, icon)
+- [ ] 107. Add screenshots and demonstration video
+- [ ] 108. Complete system requirements section
+- [ ] 109. Add related documents and technical guides
+- [ ] 110. Configure pricing model (Free/BYOL/Paid)
+- [ ] 111. Set up pricing details if applicable:
+  - [ ] OCPU per hour pricing
+  - [ ] Instance per hour pricing
+  - [ ] Currency selection
+
+### Artifact Creation
+- [ ] 112. Upload custom images to OCI tenancy
+- [ ] 113. Create marketplace artifact in Partner Portal
+- [ ] 114. Select compatible compute shapes for images
+- [ ] 115. Configure snapshot permissions if applicable
+- [ ] 116. Test artifact creation and validation process
+- [ ] 117. Wait for artifact validation completion (up to 6 hours)
+- [ ] 118. Address any validation errors if artifacts marked "Unavailable"
+
+### Content Review and Validation
+- [ ] 119. Review all listing content for accuracy
+- [ ] 120. Check spelling and grammar throughout
+- [ ] 121. Verify all links open correctly in new tabs
+- [ ] 122. Ensure consistent formatting and styling
+- [ ] 123. Validate technical specifications match actual requirements
+- [ ] 124. Test download links and external references
+- [ ] 125. Preview listing appearance across different devices
+
+## Testing and Quality Assurance
+
+### Functional Testing
+- [ ] 126. Deploy solution in clean OCI environment
+- [ ] 127. Test installation process following documented procedures
+- [ ] 128. Verify all features function as described
+- [ ] 129. Test across multiple compute shapes if applicable
+- [ ] 130. Validate network connectivity and security configurations
+- [ ] 131. Test backup and recovery procedures
+- [ ] 132. Perform load testing if applicable
+- [ ] 133. Verify monitoring and logging functionality
+
+### Security Testing
+- [ ] 134. Run vulnerability scans on custom images
+- [ ] 135. Test SSH access restrictions and key management
+- [ ] 136. Validate firewall rules and network security
+- [ ] 137. Check for exposed default passwords or accounts
+- [ ] 138. Verify encryption of data in transit and at rest
+- [ ] 139. Test metadata service access controls
+
+### Documentation Testing
+- [ ] 140. Follow getting started guide step-by-step
+- [ ] 141. Test all documented procedures and commands
+- [ ] 142. Verify troubleshooting instructions work correctly
+- [ ] 143. Check all documentation links and references
+- [ ] 144. Validate system requirements against actual deployment
+
+## Submission and Review Process
+
+### Pre-Submission Checklist
+- [ ] 145. Complete final review of all listing content
+- [ ] 146. Verify compliance with all mandatory guidelines
+- [ ] 147. Ensure all artifacts are marked "Available"
+- [ ] 148. Confirm pricing model and currency settings
+- [ ] 149. Review terms of use and legal documentation
+
+### Submission Process
+- [ ] 150. Submit listing for Oracle review through Partner Portal
+- [ ] 151. Include supporting documents for Oracle review team:
+  - [ ] Technical architecture documentation
+  - [ ] Security assessment reports
+  - [ ] Performance test results
+  - [ ] Deployment guides
+- [ ] 152. Monitor Partner Portal for review status updates
+- [ ] 153. Respond promptly to Oracle reviewer questions
+- [ ] 154. Address any technical or business feedback received
+
+### Review Response
+- [ ] 155. Review Oracle feedback thoroughly
+- [ ] 156. Address technical issues identified:
+  - [ ] Security vulnerabilities
+  - [ ] Performance problems
+  - [ ] Documentation gaps
+  - [ ] Compliance violations
+- [ ] 157. Update business processes if required:
+  - [ ] Support procedures
+  - [ ] Pricing model adjustments
+  - [ ] Terms of use modifications
+- [ ] 158. Resubmit updated listing if changes required
+- [ ] 159. Wait for final approval from Oracle review team
+
+## Publication and Launch
+
+### Publication Preparation
+- [ ] 160. Coordinate marketing and launch activities
+- [ ] 161. Prepare customer support team for inquiries
+- [ ] 162. Set up monitoring and alerting for solution performance
+- [ ] 163. Prepare launch communications and press materials
+
+### Publication Process
+- [ ] 164. Choose publication method (automatic or manual)
+- [ ] 165. If manual publication selected, coordinate timing
+- [ ] 166. Click "Publish" when ready to go live
+- [ ] 167. Verify listing appears correctly on Oracle Cloud Marketplace
+- [ ] 168. Test customer deployment process
+
+### Post-Publication Activities
+- [ ] 169. Monitor initial customer deployments
+- [ ] 170. Respond to customer questions and support requests
+- [ ] 171. Gather customer feedback and usage metrics
+- [ ] 172. Address any post-launch issues promptly
+
+## Ongoing Maintenance and Growth
+
+### Regular Maintenance
+- [ ] 173. Monitor security advisories and vulnerabilities
+- [ ] 174. Publish quarterly security updates
+- [ ] 175. Update documentation as needed
+- [ ] 176. Maintain current certifications and training
+- [ ] 177. Renew OPN membership annually ($500 USD)
+- [ ] 178. Renew track subscriptions if applicable
+
+### Performance Monitoring
+- [ ] 179. Monitor solution deployment metrics
+- [ ] 180. Track customer satisfaction scores
+- [ ] 181. Analyze marketplace performance data
+- [ ] 182. Review and optimize pricing models
+- [ ] 183. Monitor competitor activities and market trends
+
+### Continuous Improvement
+- [ ] 184. Collect and implement customer feedback
+- [ ] 185. Develop new features and capabilities
+- [ ] 186. Explore additional Oracle Cloud integrations
+- [ ] 187. Consider expansion to new geographical markets
+- [ ] 188. Pursue higher levels of Oracle expertise
+- [ ] 189. Develop complementary solutions and offerings
+
+### Growth Opportunities
+- [ ] 190. Advance OPN membership level (Advanced, Expert)
+- [ ] 191. Pursue additional Oracle Expertise certifications
+- [ ] 192. Participate in Oracle events and conferences
+- [ ] 193. Explore joint go-to-market opportunities with Oracle
+- [ ] 194. Consider Oracle Cloud Infrastructure specialty programs
+- [ ] 195. Develop industry-specific solutions and expertise
+
+---
+
+## Estimated Timeline
+
+**Weeks 1-4**: Pre-qualification and OPN enrollment
+**Weeks 5-12**: Expertise development and certification
+**Weeks 13-14**: Marketplace publisher registration
+**Weeks 15-30**: Product development and technical compliance
+**Weeks 31-32**: Listing creation and content development
+**Weeks 33-36**: Testing, submission, and review process
+**Week 37+**: Publication and ongoing maintenance
+
+**Total Duration**: 9-12 months from start to marketplace publication

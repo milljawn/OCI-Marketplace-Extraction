@@ -1,0 +1,294 @@
+<svg width="1200" height="1600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .phase-header { fill: #1976d2; font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; }
+      .process-box { fill: #e3f2fd; stroke: #1976d2; stroke-width: 2; }
+      .decision-diamond { fill: #fff3e0; stroke: #f57c00; stroke-width: 2; }
+      .milestone-box { fill: #c8e6c9; stroke: #388e3c; stroke-width: 2; }
+      .text-normal { fill: #333; font-family: Arial, sans-serif; font-size: 11px; }
+      .text-small { fill: #666; font-family: Arial, sans-serif; font-size: 9px; }
+      .text-bold { fill: #333; font-family: Arial, sans-serif; font-size: 11px; font-weight: bold; }
+      .text-white { fill: white; font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; }
+      .connector { stroke: #666; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+      .timeline { stroke: #ddd; stroke-width: 1; stroke-dasharray: 5,5; }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#666" />
+    </marker>
+  </defs>
+  
+  <!-- Timeline -->
+  <line x1="50" y1="80" x2="50" y2="1550" class="timeline"/>
+  <text x="15" y="85" class="text-small">Month 1</text>
+  <text x="15" y="200" class="text-small">Month 2</text>
+  <text x="15" y="350" class="text-small">Month 3</text>
+  <text x="15" y="500" class="text-small">Month 4</text>
+  <text x="15" y="650" class="text-small">Month 5</text>
+  <text x="15" y="800" class="text-small">Month 6</text>
+  <text x="15" y="950" class="text-small">Month 7</text>
+  <text x="15" y="1100" class="text-small">Month 8</text>
+  <text x="15" y="1250" class="text-small">Month 9</text>
+  <text x="15" y="1400" class="text-small">Month 10</text>
+  <text x="15" y="1550" class="text-small">Month 11</text>
+
+  <!-- Phase 1: Pre-Qualification -->
+  <rect x="80" y="100" width="300" height="30" class="phase-header"/>
+  <text x="230" y="120" class="text-white" text-anchor="middle">PHASE 1: PRE-QUALIFICATION</text>
+  
+  <rect x="100" y="140" width="260" height="40" class="process-box"/>
+  <text x="230" y="158" class="text-bold" text-anchor="middle">Company Assessment</text>
+  <text x="230" y="172" class="text-small" text-anchor="middle">Checklist Items 1-10</text>
+  
+  <polygon points="180,200 280,200 300,220 280,240 180,240 160,220" class="decision-diamond"/>
+  <text x="230" y="218" class="text-bold" text-anchor="middle">Meet Requirements?</text>
+  <text x="230" y="232" class="text-small" text-anchor="middle">6 months, 5 employees</text>
+  
+  <rect x="100" y="260" width="260" height="40" class="process-box"/>
+  <text x="230" y="278" class="text-bold" text-anchor="middle">Oracle Account and Journey Builder</text>
+  <text x="230" y="292" class="text-small" text-anchor="middle">Checklist Items 11-14</text>
+
+  <!-- Phase 2: OPN Enrollment -->
+  <rect x="80" y="320" width="300" height="30" class="phase-header"/>
+  <text x="230" y="340" class="text-white" text-anchor="middle">PHASE 2: OPN ENROLLMENT</text>
+  
+  <rect x="100" y="360" width="260" height="40" class="process-box"/>
+  <text x="230" y="378" class="text-bold" text-anchor="middle">Submit OPN Application</text>
+  <text x="230" y="392" class="text-small" text-anchor="middle">Checklist Items 15-22</text>
+  
+  <polygon points="180,420 280,420 300,440 280,460 180,460 160,440" class="decision-diamond"/>
+  <text x="230" y="438" class="text-bold" text-anchor="middle">Application</text>
+  <text x="230" y="452" class="text-small" text-anchor="middle">Approved?</text>
+
+  <!-- Phase 3: Expertise Development -->
+  <rect x="80" y="480" width="300" height="30" class="phase-header"/>
+  <text x="230" y="500" class="text-white" text-anchor="middle">PHASE 3: EXPERTISE DEVELOPMENT</text>
+  
+  <rect x="100" y="520" width="260" height="40" class="process-box"/>
+  <text x="230" y="538" class="text-bold" text-anchor="middle">Certifications and Training</text>
+  <text x="230" y="552" class="text-small" text-anchor="middle">Checklist Items 26-36</text>
+  
+  <polygon points="180,580 280,580 300,600 280,620 180,620 160,600" class="decision-diamond"/>
+  <text x="230" y="598" class="text-bold" text-anchor="middle">Oracle Expertise</text>
+  <text x="230" y="612" class="text-small" text-anchor="middle">Achieved?</text>
+
+  <!-- Phase 4: Marketplace Registration -->
+  <rect x="80" y="640" width="300" height="30" class="phase-header"/>
+  <text x="230" y="660" class="text-white" text-anchor="middle">PHASE 4: MARKETPLACE REGISTRATION</text>
+  
+  <rect x="100" y="680" width="260" height="40" class="process-box"/>
+  <text x="230" y="698" class="text-bold" text-anchor="middle">Publisher and Supplier Setup</text>
+  <text x="230" y="712" class="text-small" text-anchor="middle">Checklist Items 37-47</text>
+  
+  <polygon points="180,740 280,740 300,760 280,780 180,780 160,760" class="decision-diamond"/>
+  <text x="230" y="758" class="text-bold" text-anchor="middle">Verification</text>
+  <text x="230" y="772" class="text-small" text-anchor="middle">Complete?</text>
+
+  <!-- Phase 5: Product Development -->
+  <rect x="80" y="800" width="300" height="30" class="phase-header"/>
+  <text x="230" y="820" class="text-white" text-anchor="middle">PHASE 5: PRODUCT DEVELOPMENT</text>
+  
+  <rect x="100" y="840" width="260" height="55" class="process-box"/>
+  <text x="230" y="858" class="text-bold" text-anchor="middle">Technical Implementation</text>
+  <text x="230" y="872" class="text-small" text-anchor="middle">SSH Keys, Cloud-init, Security</text>
+  <text x="230" y="884" class="text-small" text-anchor="middle">Checklist Items 57-88</text>
+  
+  <polygon points="180,920 280,920 300,940 280,960 180,960 160,940" class="decision-diamond"/>
+  <text x="230" y="938" class="text-bold" text-anchor="middle">Technical</text>
+  <text x="230" y="952" class="text-small" text-anchor="middle">Compliance?</text>
+
+  <!-- Phase 6: Documentation & Content -->
+  <rect x="80" y="980" width="300" height="30" class="phase-header"/>
+  <text x="230" y="1000" class="text-white" text-anchor="middle">PHASE 6: DOCUMENTATION AND CONTENT</text>
+  
+  <rect x="100" y="1020" width="260" height="55" class="process-box"/>
+  <text x="230" y="1038" class="text-bold" text-anchor="middle">Create Documentation and Assets</text>
+  <text x="230" y="1052" class="text-small" text-anchor="middle">Guides, Screenshots, Videos</text>
+  <text x="230" y="1064" class="text-small" text-anchor="middle">Checklist Items 89-125</text>
+
+  <!-- Phase 7: Testing & QA -->
+  <rect x="80" y="1100" width="300" height="30" class="phase-header"/>
+  <text x="230" y="1120" class="text-white" text-anchor="middle">PHASE 7: TESTING AND QA</text>
+  
+  <rect x="100" y="1140" width="260" height="55" class="process-box"/>
+  <text x="230" y="1158" class="text-bold" text-anchor="middle">Comprehensive Testing</text>
+  <text x="230" y="1172" class="text-small" text-anchor="middle">Functional, Security, Documentation</text>
+  <text x="230" y="1184" class="text-small" text-anchor="middle">Checklist Items 126-144</text>
+  
+  <polygon points="180,1220 280,1220 300,1240 280,1260 180,1260 160,1240" class="decision-diamond"/>
+  <text x="230" y="1238" class="text-bold" text-anchor="middle">Testing</text>
+  <text x="230" y="1252" class="text-small" text-anchor="middle">Passed?</text>
+
+  <!-- Phase 8: Submission & Review -->
+  <rect x="80" y="1280" width="300" height="30" class="phase-header"/>
+  <text x="230" y="1300" class="text-white" text-anchor="middle">PHASE 8: SUBMISSION AND REVIEW</text>
+  
+  <rect x="100" y="1320" width="260" height="40" class="process-box"/>
+  <text x="230" y="1338" class="text-bold" text-anchor="middle">Submit to Oracle</text>
+  <text x="230" y="1352" class="text-small" text-anchor="middle">Checklist Items 150-159</text>
+  
+  <polygon points="180,1380 280,1380 300,1400 280,1420 180,1420 160,1400" class="decision-diamond"/>
+  <text x="230" y="1398" class="text-bold" text-anchor="middle">Oracle Review</text>
+  <text x="230" y="1412" class="text-small" text-anchor="middle">Approved?</text>
+
+  <!-- Phase 9: Publication -->
+  <rect x="80" y="1440" width="300" height="30" class="phase-header"/>
+  <text x="230" y="1460" class="text-white" text-anchor="middle">PHASE 9: PUBLICATION AND MAINTENANCE</text>
+  
+  <rect x="100" y="1480" width="260" height="40" class="milestone-box"/>
+  <text x="230" y="1498" class="text-bold" text-anchor="middle">Go Live on Marketplace</text>
+  <text x="230" y="1512" class="text-small" text-anchor="middle">Checklist Items 164-168</text>
+  
+  <rect x="100" y="1540" width="260" height="40" class="process-box"/>
+  <text x="230" y="1558" class="text-bold" text-anchor="middle">Ongoing Maintenance</text>
+  <text x="230" y="1572" class="text-small" text-anchor="middle">Checklist Items 173-195</text>
+
+  <!-- Right Side: Technical Requirements Detail -->
+  <rect x="450" y="100" width="720" height="30" style="fill: #2e7d32;"/>
+  <text x="810" y="120" class="text-white" text-anchor="middle">CRITICAL TECHNICAL REQUIREMENTS</text>
+
+  <!-- Linux Image Requirements -->
+  <rect x="470" y="150" width="340" height="160" style="fill: #f3e5f5; stroke: #7b1fa2; stroke-width: 2;"/>
+  <text x="640" y="170" class="text-bold" text-anchor="middle">Linux Image Requirements</text>
+  
+  <text x="480" y="190" class="text-normal">SSH Host Keys (Items 59-60):</text>
+  <text x="480" y="205" class="text-small">Remove all existing keys with oci-image-cleanup</text>
+  <text x="480" y="218" class="text-small">Keys regenerated uniquely on each boot</text>
+  
+  <text x="480" y="238" class="text-normal">Root User Security (Items 61-62):</text>
+  <text x="480" y="253" class="text-small">Set login shell to /sbin/nologin</text>
+  <text x="480" y="266" class="text-small">Configure PermitRootLogin no in sshd_config</text>
+  
+  <text x="480" y="286" class="text-normal">Authorized Keys (Items 62-64):</text>
+  <text x="480" y="301" class="text-small">Include: no-port-forwarding, no-agent-forwarding, no-X11-forwarding</text>
+
+  <!-- Windows Image Requirements -->
+  <rect x="830" y="150" width="340" height="160" style="fill: #e8f5e8; stroke: #2e7d32; stroke-width: 2;"/>
+  <text x="1000" y="170" class="text-bold" text-anchor="middle">Windows Image Requirements</text>
+  
+  <text x="840" y="190" class="text-normal">Sysprep Process (Items 71-72):</text>
+  <text x="840" y="205" class="text-small">Run: sysprep /generalize /oobe /shutdown</text>
+  <text x="840" y="218" class="text-small">Remove user-specific configurations</text>
+  <text x="840" y="231" class="text-small">Clear Windows activation status</text>
+  
+  <text x="840" y="251" class="text-normal">Account Management (Item 73):</text>
+  <text x="840" y="266" class="text-small">Remove/disable pre-configured accounts</text>
+  <text x="840" y="279" class="text-small">Configure for cloud-init user creation</text>
+  
+  <text x="840" y="299" class="text-normal">Metadata Service (Item 72):</text>
+
+  <!-- Application Requirements -->
+  <rect x="470" y="330" width="340" height="180" style="fill: #fff3e0; stroke: #f57c00; stroke-width: 2;"/>
+  <text x="640" y="350" class="text-bold" text-anchor="middle">Application Listing Requirements</text>
+  
+  <text x="480" y="370" class="text-normal">Content Specifications (Items 103-105):</text>
+  <text x="480" y="385" class="text-small">App name: 80 chars max (36 optimal)</text>
+  <text x="480" y="398" class="text-small">Clear headline stating purpose</text>
+  <text x="480" y="411" class="text-small">Comprehensive description with value prop</text>
+  
+  <text x="480" y="431" class="text-normal">Technical Documentation (Items 108-109):</text>
+  <text x="480" y="446" class="text-small">Complete system requirements</text>
+  <text x="480" y="459" class="text-small">Network ports documentation</text>
+  <text x="480" y="472" class="text-small">Getting started guide</text>
+  
+  <text x="480" y="492" class="text-normal">Support and Legal (Items 109, 113):</text>
+  <text x="480" y="507" class="text-small">Valid phone/email for support</text>
+
+  <!-- Asset Requirements -->
+  <rect x="830" y="330" width="340" height="180" style="fill: #e3f2fd; stroke: #1976d2; stroke-width: 2;"/>
+  <text x="1000" y="350" class="text-bold" text-anchor="middle">Marketing Asset Requirements</text>
+  
+  <text x="840" y="370" class="text-normal">Image Specifications (Items 95-97):</text>
+  <text x="840" y="385" class="text-small">Banner: 1160x200px, max 10MB</text>
+  <text x="840" y="398" class="text-small">Logo: 115x115px, max 5MB</text>
+  <text x="840" y="411" class="text-small">Icon: 130x130px, max 5MB</text>
+  <text x="840" y="424" class="text-small">Formats: BMP/GIF/JPEG/PNG</text>
+  
+  <text x="840" y="444" class="text-normal">Screenshots (Items 98-99):</text>
+  <text x="840" y="459" class="text-small">Recommended: 640x480px</text>
+  <text x="840" y="472" class="text-small">4:3 aspect ratio preferred</text>
+  <text x="840" y="485" class="text-small">Hide browser toolbars</text>
+  
+  <text x="840" y="505" class="text-normal">Video Requirements (Item 100):</text>
+
+  <!-- Security & Compliance -->
+  <rect x="470" y="530" width="700" height="140" style="fill: #ffebee; stroke: #d32f2f; stroke-width: 2;"/>
+  <text x="820" y="550" class="text-bold" text-anchor="middle">Security and Compliance Requirements</text>
+  
+  <text x="480" y="570" class="text-normal">Vulnerability Notification Timeline:</text>
+  <text x="480" y="585" class="text-small">CVSS 9.0+: Notify Oracle within 3 business days</text>
+  <text x="480" y="598" class="text-small">CVSS 7.0-8.9: Notify Oracle within 5 business days</text>
+  <text x="480" y="611" class="text-small">CVSS 4.0-6.9: Notify Oracle within 20 business days</text>
+  
+  <text x="480" y="631" class="text-normal">Ongoing Requirements:</text>
+  <text x="480" y="646" class="text-small">Quarterly security updates recommended</text>
+  <text x="480" y="659" class="text-small">Document all open network ports</text>
+
+  <!-- Decision Paths and Connectors -->
+  
+  <!-- Main flow connectors -->
+  <line x1="230" y1="180" x2="230" y2="200" class="connector"/>
+  <line x1="230" y1="240" x2="230" y2="260" class="connector"/>
+  <line x1="230" y1="300" x2="230" y2="320" class="connector"/>
+  <line x1="230" y1="400" x2="230" y2="420" class="connector"/>
+  <line x1="230" y1="460" x2="230" y2="480" class="connector"/>
+  <line x1="230" y1="560" x2="230" y2="580" class="connector"/>
+  <line x1="230" y1="620" x2="230" y2="640" class="connector"/>
+  <line x1="230" y1="720" x2="230" y2="740" class="connector"/>
+  <line x1="230" y1="780" x2="230" y2="800" class="connector"/>
+  <line x1="230" y1="895" x2="230" y2="920" class="connector"/>
+  <line x1="230" y1="960" x2="230" y2="980" class="connector"/>
+  <line x1="230" y1="1075" x2="230" y2="1100" class="connector"/>
+  <line x1="230" y1="1195" x2="230" y2="1220" class="connector"/>
+  <line x1="230" y1="1260" x2="230" y2="1280" class="connector"/>
+  <line x1="230" y1="1360" x2="230" y2="1380" class="connector"/>
+  <line x1="230" y1="1420" x2="230" y2="1440" class="connector"/>
+  <line x1="230" y1="1520" x2="230" y2="1540" class="connector"/>
+
+  <!-- Feedback loops for "No" decisions -->
+  <path d="M 160 220 L 120 220 L 120 160 L 160 160" class="connector"/>
+  <text x="125" y="175" class="text-small">No</text>
+  
+  <path d="M 160 440 L 120 440 L 120 380 L 160 380" class="connector"/>
+  <text x="125" y="395" class="text-small">No</text>
+  
+  <path d="M 160 600 L 120 600 L 120 540 L 160 540" class="connector"/>
+  <text x="125" y="555" class="text-small">No</text>
+  
+  <path d="M 160 760 L 120 760 L 120 700 L 160 700" class="connector"/>
+  <text x="125" y="715" class="text-small">No</text>
+  
+  <path d="M 160 940 L 120 940 L 120 860 L 160 860" class="connector"/>
+  <text x="125" y="875" class="text-small">No</text>
+  
+  <path d="M 160 1240 L 120 1240 L 120 1160 L 160 1160" class="connector"/>
+  <text x="125" y="1175" class="text-small">No</text>
+  
+  <path d="M 160 1400 L 120 1400 L 120 1340 L 160 1340" class="connector"/>
+  <text x="125" y="1355" class="text-small">No</text>
+
+  <!-- Yes labels -->
+  <text x="300" y="232" class="text-small">Yes</text>
+  <text x="300" y="452" class="text-small">Yes</text>
+  <text x="300" y="612" class="text-small">Yes</text>
+  <text x="300" y="772" class="text-small">Yes</text>
+  <text x="300" y="952" class="text-small">Yes</text>
+  <text x="300" y="1252" class="text-small">Yes</text>
+  <text x="300" y="1412" class="text-small">Yes</text>
+
+  <!-- Key Milestones -->
+  <rect x="470" y="700" width="340" height="100" style="fill: #c8e6c9; stroke: #388e3c; stroke-width: 2;"/>
+  <text x="640" y="720" class="text-bold" text-anchor="middle">Key Milestones and Fees</text>
+  <text x="480" y="740" class="text-normal">OPN Membership: $500 USD annually</text>
+  <text x="480" y="755" class="text-normal">Track Subscriptions: Additional fees apply</text>
+  <text x="480" y="770" class="text-normal">Marketplace Publishing: No additional fees</text>
+  <text x="480" y="785" class="text-normal">Review Timeline: 2-4 weeks typical</text>
+
+  <!-- Success Metrics -->
+  <rect x="830" y="700" width="340" height="100" style="fill: #fff9c4; stroke: #f9a825; stroke-width: 2;"/>
+  <text x="1000" y="720" class="text-bold" text-anchor="middle">Success Factors</text>
+  <text x="840" y="740" class="text-small">Early certification and expertise development</text>
+  <text x="840" y="755" class="text-small">Comprehensive documentation and testing</text>
+  <text x="840" y="770" class="text-small">Active Oracle relationship management</text>
+  <text x="840" y="785" class="text-small">Customer-focused support processes</text>
+
+</svg>

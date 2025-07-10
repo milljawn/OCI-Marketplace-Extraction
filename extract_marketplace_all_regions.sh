@@ -1,232 +1,257 @@
-@echo off
-REM Oracle Cloud Marketplace Complete Extractor - All Regions (Windows Version)
-REM Enhanced version with comprehensive government region extraction
+#!/bin/bash
 
-echo ========================================
-echo Oracle Cloud Marketplace Data Extractor
-echo ALL REGIONS: Commercial + US Gov + DoD
-echo ========================================
+# Oracle Cloud Marketplace Complete Extractor - All Regions
+# For macOS/Linux - Bash version
 
-REM Check if OCI CLI is installed
-where oci >nul 2>&1
-if %errorlevel% neq 0 (
-    echo ERROR: OCI CLI not found. Please install it first:
-    echo    https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/cliinstall.htm
-    exit /b 1
-)
+echo "========================================"
+echo "Oracle Cloud Marketplace Data Extractor"
+echo "ALL REGIONS: Commercial + US Gov + DoD"
+echo "========================================"
 
-REM Check if OCI is configured
-if not exist "%USERPROFILE%\.oci\config" (
-    echo ERROR: OCI CLI not configured. Please run:
-    echo    oci setup config
-    exit /b 1
-)
+# Check if OCI CLI is installed
+if ! command -v oci &> /dev/null; then
+    echo "❌ OCI CLI not found. Please install it first:"
+    echo "   brew install oci-cli (macOS)"
+    echo "   OR"
+    echo "   bash -c \"\$(curl -L https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh)\""
+    exit 1
+fi
 
-REM Create output directory
-if not exist marketplace_data mkdir marketplace_data
+# Check if OCI is configured
+if [ ! -f ~/.oci/config ]; then
+    echo "❌ OCI CLI not configured. Please run:"
+    echo "   oci setup config"
+    exit 1
+fi
+
+# Create output directory
+mkdir -p marketplace_data
 cd marketplace_data
 
-echo.
-echo Phase 1: Extracting commercial marketplace catalog...
-echo =================================================
+echo ""
+echo "Phase 1: Extracting commercial marketplace catalog..."
+echo "================================================="
 
-REM Get all commercial marketplace listings with full details
-echo Extracting all commercial marketplace listings...
-oci marketplace listing list --all --output json > all_listings_commercial.json
-if %errorlevel% equ 0 (
-    echo SUCCESS: Successfully extracted commercial listings
-    for /f "tokens=*" %%a in ('powershell -Command "(Get-Content all_listings_commercial.json | ConvertFrom-Json).data.Count"') do set LISTING_COUNT=%%a
-    echo    Found: %LISTING_COUNT% commercial listings
-) else (
-    echo ERROR: Failed to extract listings. Check OCI CLI configuration.
-    echo    Try: oci iam user list
-    exit /b 1
-)
+# Get all commercial marketplace listings with full details
+echo "📊 Extracting all commercial marketplace listings..."
+if oci marketplace listing list --all --output json > all_listings_commercial.json; then
+    echo "✅ Successfully extracted commercial listings"
+    LISTING_COUNT=$(jq '.data | length' all_listings_commercial.json 2>/dev/null || echo "unknown")
+    echo "   Found: $LISTING_COUNT commercial listings"
+else
+    echo "❌ Failed to extract listings. Check OCI CLI configuration."
+    echo "   Try: oci iam user list"
+    exit 1
+fi
 
-REM Get structured search results (additional metadata)
-echo Extracting detailed commercial marketplace metadata...
-oci marketplace listing-summary search-listings-structured --search-query "{}" --all --output json > listings_detailed_commercial.json
-if %errorlevel% equ 0 (
-    echo SUCCESS: Successfully extracted detailed commercial metadata
-) else (
-    echo WARNING: Could not extract detailed metadata (proceeding with main data)
-)
+# Get structured search results (additional metadata)
+echo "📋 Extracting detailed commercial marketplace metadata..."
+if oci marketplace listing-summary search-listings-structured --search-query '{}' --all --output json > listings_detailed_commercial.json; then
+    echo "✅ Successfully extracted detailed commercial metadata"
+else
+    echo "⚠️  Warning: Could not extract detailed metadata (proceeding with main data)"
+fi
 
-echo.
-echo Phase 2: US Government region extraction...
-echo =========================================
+echo ""
+echo "Phase 2: US Government region extraction..."
+echo "========================================="
 
-REM Extract US Government East (Ashburn)
-echo Extracting US Government East region...
-oci marketplace listing list --all --region us-gov-ashburn-1 --output json > us_gov_east_listings.json 2>nul
-if %errorlevel% equ 0 (
-    for /f "tokens=*" %%a in ('powershell -Command "(Get-Content us_gov_east_listings.json | ConvertFrom-Json).data.Count"') do set GOV_COUNT=%%a
-    echo    SUCCESS: US Government East: %GOV_COUNT% listings available
+# Function to extract marketplace data from a specific region
+extract_region_data() {
+    local region=$1
+    local output_prefix=$2
+    local description=$3
     
-    echo    Extracting detailed metadata for US Gov East...
-    oci marketplace listing-summary search-listings-structured --search-query "{}" --all --region us-gov-ashburn-1 --output json > us_gov_east_detailed.json 2>nul
-) else (
-    echo    WARNING: US Government East: Region not accessible
-    echo {"data": []} > us_gov_east_listings.json
-)
-
-REM Extract US Government West (Phoenix)
-echo Extracting US Government West region...
-oci marketplace listing list --all --region us-gov-phoenix-1 --output json > us_gov_west_listings.json 2>nul
-if %errorlevel% equ 0 (
-    for /f "tokens=*" %%a in ('powershell -Command "(Get-Content us_gov_west_listings.json | ConvertFrom-Json).data.Count"') do set GOV_COUNT=%%a
-    echo    SUCCESS: US Government West: %GOV_COUNT% listings available
+    echo "🏛️  Extracting $description..."
     
-    echo    Extracting detailed metadata for US Gov West...
-    oci marketplace listing-summary search-listings-structured --search-query "{}" --all --region us-gov-phoenix-1 --output json > us_gov_west_detailed.json 2>nul
-) else (
-    echo    WARNING: US Government West: Region not accessible
-    echo {"data": []} > us_gov_west_listings.json
-)
+    # Main listings
+    if oci marketplace listing list --all --region "$region" --output json > "${output_prefix}_listings.json" 2>/dev/null; then
+        GOV_COUNT=$(jq '.data | length' "${output_prefix}_listings.json" 2>/dev/null || echo "0")
+        echo "   ✅ $description: $GOV_COUNT listings available"
+        
+        # Detailed metadata
+        echo "   📋 Extracting detailed metadata for $description..."
+        oci marketplace listing-summary search-listings-structured --search-query '{}' --all --region "$region" --output json > "${output_prefix}_detailed.json" 2>/dev/null
+        
+        # Publisher information
+        echo "   🏢 Extracting publishers for $description..."
+        oci marketplace publisher list --all --region "$region" --output json > "${output_prefix}_publishers.json" 2>/dev/null
+        
+    else
+        echo "   ❌ $description: Region not accessible"
+        echo '{"data": []}' > "${output_prefix}_listings.json"
+    fi
+}
 
-echo.
-echo Phase 3: DoD region extraction...
-echo =================================
+# Extract US Government East (Ashburn)
+extract_region_data "us-gov-ashburn-1" "us_gov_east" "US Government East (Ashburn)"
 
-REM Extract DoD regions
-echo Extracting US DoD East region...
-oci marketplace listing list --all --region us-dod-east-1 --output json > us_dod_east_listings.json 2>nul
-if %errorlevel% equ 0 (
-    for /f "tokens=*" %%a in ('powershell -Command "(Get-Content us_dod_east_listings.json | ConvertFrom-Json).data.Count"') do set DOD_COUNT=%%a
-    echo    SUCCESS: US DoD East: %DOD_COUNT% listings available
-) else (
-    echo    WARNING: US DoD East: Region not accessible
-    echo {"data": []} > us_dod_east_listings.json
-)
+# Extract US Government West (Phoenix)
+extract_region_data "us-gov-phoenix-1" "us_gov_west" "US Government West (Phoenix)"
 
-echo Extracting US DoD Central region...
-oci marketplace listing list --all --region us-dod-central-1 --output json > us_dod_central_listings.json 2>nul
-if %errorlevel% equ 0 (
-    for /f "tokens=*" %%a in ('powershell -Command "(Get-Content us_dod_central_listings.json | ConvertFrom-Json).data.Count"') do set DOD_COUNT=%%a
-    echo    SUCCESS: US DoD Central: %DOD_COUNT% listings available
-) else (
-    echo    WARNING: US DoD Central: Region not accessible
-    echo {"data": []} > us_dod_central_listings.json
-)
+echo ""
+echo "Phase 3: DoD region extraction..."
+echo "================================="
 
-echo Extracting US DoD West region...
-oci marketplace listing list --all --region us-dod-west-1 --output json > us_dod_west_listings.json 2>nul
-if %errorlevel% equ 0 (
-    for /f "tokens=*" %%a in ('powershell -Command "(Get-Content us_dod_west_listings.json | ConvertFrom-Json).data.Count"') do set DOD_COUNT=%%a
-    echo    SUCCESS: US DoD West: %DOD_COUNT% listings available
-) else (
-    echo    WARNING: US DoD West: Region not accessible
-    echo {"data": []} > us_dod_west_listings.json
-)
+# Extract DoD regions (if accessible)
+extract_region_data "us-dod-east-1" "us_dod_east" "US DoD East"
+extract_region_data "us-dod-central-1" "us_dod_central" "US DoD Central"
+extract_region_data "us-dod-west-1" "us_dod_west" "US DoD West"
 
-echo.
-echo Phase 4: UK Government region extraction...
-echo ==========================================
+echo ""
+echo "Phase 4: UK Government region extraction..."
+echo "=========================================="
 
-REM Extract UK Government region
-echo Extracting UK Government region...
-oci marketplace listing list --all --region uk-gov-london-1 --output json > uk_gov_listings.json 2>nul
-if %errorlevel% equ 0 (
-    for /f "tokens=*" %%a in ('powershell -Command "(Get-Content uk_gov_listings.json | ConvertFrom-Json).data.Count"') do set UK_COUNT=%%a
-    echo    SUCCESS: UK Government: %UK_COUNT% listings available
-) else (
-    echo    WARNING: UK Government: Region not accessible
-    echo {"data": []} > uk_gov_listings.json
-)
+# Extract UK Government region
+extract_region_data "uk-gov-london-1" "uk_gov" "UK Government (London)"
 
-echo.
-echo Phase 5: Extracting comprehensive metadata across all regions...
-echo ==============================================================
+echo ""
+echo "Phase 5: Extracting comprehensive metadata..."
+echo "==========================================="
 
-REM Get categories for commercial region
-echo Extracting by categories for complete coverage...
-set categories=analytics compute databases developer-tools integration iot machine-learning monitoring networking security storage business-applications
+# Get categories for commercial region
+echo "📊 Extracting by categories for complete coverage..."
+categories=("analytics" "compute" "databases" "developer-tools" "integration" "iot" "machine-learning" "monitoring" "networking" "security" "storage" "business-applications")
 
-for %%c in (%categories%) do (
-    echo    Extracting %%c category...
-    oci marketplace listing list --all --category %%c --output json > commercial_category_%%c.json 2>nul
-)
+for category in "${categories[@]}"; do
+    echo "   📁 Extracting $category category..."
+    if oci marketplace listing list --all --category "$category" --output json > "commercial_category_$category.json" 2>/dev/null; then
+        CAT_COUNT=$(jq '.data | length' "commercial_category_$category.json" 2>/dev/null || echo "0")
+        echo "      Found: $CAT_COUNT listings"
+    else
+        echo "      ⚠️  Category $category not found"
+        echo '{"data": []}' > "commercial_category_$category.json"
+    fi
+done
 
-REM Get publisher information for commercial
-echo Extracting commercial publisher details...
-oci marketplace publisher list --all --output json > commercial_publishers.json
-if %errorlevel% equ 0 (
-    echo    SUCCESS: Found publisher information
-) else (
-    echo    WARNING: Could not extract publisher data
-)
+# Get publisher information for commercial
+echo "🏢 Extracting commercial publisher details..."
+if oci marketplace publisher list --all --output json > commercial_publishers.json; then
+    PUB_COUNT=$(jq '.data | length' commercial_publishers.json 2>/dev/null || echo "unknown")
+    echo "   ✅ Found: $PUB_COUNT commercial publishers"
+else
+    echo "   ⚠️  Could not extract publisher data"
+fi
 
-echo.
-echo Phase 6: Creating consolidated data files...
-echo ===========================================
+echo ""
+echo "Phase 6: Creating consolidated data files..."
+echo "==========================================="
 
-REM Create summary table
-echo Creating summary tables...
-oci marketplace listing list --all --output table > commercial_listings_summary.txt 2>nul
+# Create consolidated master file if jq is available
+if command -v jq &> /dev/null; then
+    echo "🔄 Merging all regional data..."
+    jq -s '
+      {
+        commercial: .[0].data,
+        us_gov_east: .[1].data,
+        us_gov_west: .[2].data,
+        us_dod_east: .[3].data,
+        us_dod_central: .[4].data,
+        us_dod_west: .[5].data,
+        uk_gov: .[6].data
+      }
+    ' all_listings_commercial.json \
+      us_gov_east_listings.json \
+      us_gov_west_listings.json \
+      us_dod_east_listings.json \
+      us_dod_central_listings.json \
+      us_dod_west_listings.json \
+      uk_gov_listings.json > all_regions_master.json
+else
+    echo "⚠️  jq not installed - skipping master file creation"
+fi
 
-REM Generate extraction report
-echo.
-echo Generating extraction report...
+# Create summary table
+echo "📄 Creating summary tables..."
+oci marketplace listing list --all --output table > commercial_listings_summary.txt 2>/dev/null || echo "Summary table creation failed" > commercial_listings_summary.txt
 
-REM Create timestamp
-for /f "tokens=2 delims==" %%a in ('wmic OS Get localdatetime /value') do set "dt=%%a"
-set "timestamp=%dt:~0,4%-%dt:~4,2%-%dt:~6,2% %dt:~8,2%:%dt:~10,2%:%dt:~12,2%"
+# Generate extraction report
+echo ""
+echo "📊 Generating extraction report..."
 
-(
-echo Oracle Cloud Marketplace Extraction Report - All Regions
-echo Generated: %timestamp%
-echo Extracted by: %USERNAME%
-echo Machine: %COMPUTERNAME%
-echo.
-echo Regional Breakdown:
-echo ==================
-echo See JSON files for exact counts
-echo.
-echo Files Generated:
-echo ================
-echo Commercial Data:
-echo - all_listings_commercial.json
-echo - listings_detailed_commercial.json
-echo - commercial_category_*.json
-echo - commercial_publishers.json
-echo.
-echo US Government Data:
-echo - us_gov_east_listings.json / us_gov_east_detailed.json
-echo - us_gov_west_listings.json / us_gov_west_detailed.json
-echo.
-echo US DoD Data:
-echo - us_dod_east_listings.json
-echo - us_dod_central_listings.json
-echo - us_dod_west_listings.json
-echo.
-echo UK Government Data:
-echo - uk_gov_listings.json
-echo.
-echo Next Steps:
-echo ===========
-echo 1. Run the Python processor to create sales-focused CSV:
-echo    python process_oci_all_regions.py
-echo.
-echo 2. The processor will create:
-echo    - oracle_marketplace_sales_catalog.csv
-echo    - oracle_marketplace_sales_summary.txt
-) > extraction_report.txt
+# Count listings per region
+COMMERCIAL_COUNT=$(jq '.data | length' all_listings_commercial.json 2>/dev/null || echo "0")
+US_GOV_EAST_COUNT=$(jq '.data | length' us_gov_east_listings.json 2>/dev/null || echo "0")
+US_GOV_WEST_COUNT=$(jq '.data | length' us_gov_west_listings.json 2>/dev/null || echo "0")
+US_DOD_EAST_COUNT=$(jq '.data | length' us_dod_east_listings.json 2>/dev/null || echo "0")
+US_DOD_CENTRAL_COUNT=$(jq '.data | length' us_dod_central_listings.json 2>/dev/null || echo "0")
+US_DOD_WEST_COUNT=$(jq '.data | length' us_dod_west_listings.json 2>/dev/null || echo "0")
+UK_GOV_COUNT=$(jq '.data | length' uk_gov_listings.json 2>/dev/null || echo "0")
 
-echo.
-echo =========================================
-echo SUCCESS: Extraction Complete!
-echo =========================================
-echo.
-echo Regional data extracted (check individual files for counts)
-echo.
-echo Next step: Create sales-focused CSV
-echo    Command: python process_oci_all_regions.py
-echo.
-echo All files saved in: %cd%
-echo.
+cat > extraction_report.txt << EOF
+Oracle Cloud Marketplace Extraction Report - All Regions
+Generated: $(date)
+Extracted by: $(whoami)
+Machine: $(hostname)
 
-REM Go back to parent directory
+Regional Breakdown:
+==================
+Commercial Region:        $COMMERCIAL_COUNT listings
+US Government East:       $US_GOV_EAST_COUNT listings
+US Government West:       $US_GOV_WEST_COUNT listings
+US DoD East:             $US_DOD_EAST_COUNT listings
+US DoD Central:          $US_DOD_CENTRAL_COUNT listings
+US DoD West:             $US_DOD_WEST_COUNT listings
+UK Government:           $UK_GOV_COUNT listings
+
+Files Generated:
+================
+Commercial Data:
+- all_listings_commercial.json
+- listings_detailed_commercial.json
+- commercial_category_*.json
+- commercial_publishers.json
+
+US Government Data:
+- us_gov_east_listings.json / us_gov_east_detailed.json
+- us_gov_west_listings.json / us_gov_west_detailed.json
+
+US DoD Data:
+- us_dod_east_listings.json
+- us_dod_central_listings.json
+- us_dod_west_listings.json
+
+UK Government Data:
+- uk_gov_listings.json
+
+Consolidated Data:
+- all_regions_master.json (if jq installed)
+
+Next Steps:
+===========
+1. Run the Python processor to create sales-focused CSV:
+   python3 ../process_oci_all_regions.py
+
+2. The processor will create:
+   - oracle_marketplace_sales_catalog.csv (sales-focused format)
+   - oracle_marketplace_sales_summary.txt (executive summary)
+
+OCI CLI Configuration Used:
+==========================
+Default Region: $(grep region ~/.oci/config | head -1 | cut -d= -f2 || echo "Default")
+EOF
+
+echo ""
+echo "========================================="
+echo "✅ Extraction Complete!"
+echo "========================================="
+echo ""
+echo "📊 Regional Summary:"
+echo "   Commercial:      $COMMERCIAL_COUNT listings"
+echo "   US Gov East:     $US_GOV_EAST_COUNT listings"
+echo "   US Gov West:     $US_GOV_WEST_COUNT listings"
+echo "   US DoD East:     $US_DOD_EAST_COUNT listings"
+echo "   US DoD Central:  $US_DOD_CENTRAL_COUNT listings"
+echo "   US DoD West:     $US_DOD_WEST_COUNT listings"
+echo "   UK Government:   $UK_GOV_COUNT listings"
+echo ""
+echo "🎯 Next step: Create sales-focused CSV"
+echo "   Command: python3 ../process_oci_all_regions.py"
+echo ""
+echo "📁 All files saved in: $(pwd)"
+echo ""
+
+# Go back to parent directory
 cd ..
 
-echo Ready to process data for sales team! Run the Python processor next.
-pause
+echo "Ready to process data for sales team! Run the Python processor next."
